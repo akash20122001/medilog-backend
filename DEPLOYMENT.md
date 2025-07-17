@@ -1,5 +1,16 @@
 # Deployment Guide
 
+## Branch Strategy
+
+### Branches
+- **`main`** - Production branch (stable, deployed to production)
+- **`dev`** - Development branch (active development, deployed to staging)
+
+### Workflow
+1. **Feature Development**: Work on `dev` branch
+2. **Testing**: Test features on `dev` branch/staging environment
+3. **Production Release**: Merge `dev` → `main` → triggers production deployment
+
 ## Environment Configuration
 
 ### 1. Development (Local)

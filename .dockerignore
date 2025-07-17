@@ -1,0 +1,26 @@
+# Ignore files that shouldn't be copied to Docker image
+target/
+.git/
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+.env
+.env.local
+.env.production
+*.log
+logs/
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar

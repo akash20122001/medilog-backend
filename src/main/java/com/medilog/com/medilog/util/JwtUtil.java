@@ -1,24 +1,22 @@
 package com.medilog.com.medilog.util;
 
+import com.medilog.com.medilog.config.JwtProperties;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
     
-    @Value("${app.jwt.secret}")
-    private String jwtSecret;
-    
-    @Value("${app.jwt.expiration.ms}")
-    private int jwtExpirationMs;
+    private final JwtProperties jwtProperties;
     
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        return Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
     }
     
     public String generateToken(String email, Long userId) {
@@ -26,7 +24,7 @@ public class JwtUtil {
                 .setSubject(email)
                 .claim("userId", userId)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getExpirationMs()))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

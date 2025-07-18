@@ -5,6 +5,7 @@ import com.medilog.com.medilog.entity.User;
 import com.medilog.com.medilog.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Slf4j
 public class UserController {
     
     private final UserService userService;
@@ -21,17 +23,19 @@ public class UserController {
         Long userId = (Long) request.getAttribute("userId");
         String userEmail = (String) request.getAttribute("userEmail");
         
+        log.debug("Profile request for user ID: {}, email: {}", userId, userEmail);
+        
         if (userId == null) {
+            log.warn("Unauthorized profile access attempt");
             return ResponseEntity.status(401)
                 .body(new ApiResponse(false, "Authentication required"));
         }
         
-        try {
-            User user = userService.getUserById(userId);
-            return ResponseEntity.ok(new ApiResponse(true, "Profile retrieved successfully", user));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest()
-                .body(new ApiResponse(false, e.getMessage()));
-        }
+        User user = userService.getUserById(userId);
+        
+        // Remove password from response for security
+        user.setPassword(null);
+        
+        return ResponseEntity.ok(new ApiResponse(true, "Profile retrieved successfully", user));
     }
 }

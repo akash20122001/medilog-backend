@@ -37,6 +37,21 @@ public class GlobalExceptionHandler {
             .body(new ApiResponse(false, ex.getMessage()));
     }
     
+    @ExceptionHandler(EnvironmentConfigurationException.class)
+    public ResponseEntity<ApiResponse> handleEnvironmentConfiguration(EnvironmentConfigurationException ex) {
+        log.error("Environment configuration error: {}", ex.getMessage());
+        Map<String, String> details = new HashMap<>();
+        if (ex.getEnvironment() != null) {
+            details.put("environment", ex.getEnvironment());
+        }
+        if (ex.getConfigurationIssue() != null) {
+            details.put("issue", ex.getConfigurationIssue());
+        }
+        
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(new ApiResponse(false, "Environment configuration error: " + ex.getMessage(), details));
+    }
+    
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

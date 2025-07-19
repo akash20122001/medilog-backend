@@ -6,6 +6,7 @@ import com.medilog.com.medilog.dto.FeatureFlagResponse;
 import com.medilog.com.medilog.dto.SimpleFeatureFlagResponse;
 import com.medilog.com.medilog.exception.FeatureFlagException;
 import com.medilog.com.medilog.service.FeatureFlagService;
+import com.medilog.com.medilog.util.AuthContextUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.List;
 public class SuperAdminController {
 
     private final FeatureFlagService featureFlagService;
+    private final AuthContextUtil authContextUtil;
 
     @PostMapping("/feature-flags")
     public ResponseEntity<ApiResponse> createFeatureFlag(@Valid @RequestBody FeatureFlagRequest request) {
@@ -91,12 +93,19 @@ public class SuperAdminController {
         }
     }
 
-    @GetMapping("/feature-flags/user/{accountId}")
-    public ResponseEntity<ApiResponse> getFeatureFlagsForUser(@PathVariable Long accountId) {
-        log.info("Get feature flags for user request received for account ID: {}", accountId);
+    @GetMapping("/feature-flags/user")
+    public ResponseEntity<ApiResponse> getFeatureFlagsForUser() {
+        try {
+            Long accountId = authContextUtil.getLoggedInAccountId();
+            log.info("Get feature flags for user request received for account ID: {}", accountId);
 
-        List<SimpleFeatureFlagResponse> featureFlags = featureFlagService.getSimpleFeatureFlagsForUser(accountId);
-        return ResponseEntity.ok(new ApiResponse(true, "User feature flags retrieved successfully", featureFlags));
+            List<SimpleFeatureFlagResponse> featureFlags = featureFlagService.getSimpleFeatureFlagsForUser(accountId);
+            return ResponseEntity.ok(new ApiResponse(true, "User feature flags retrieved successfully", featureFlags));
+        } catch (IllegalStateException e) {
+            log.error("Error retrieving logged-in user context: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse(false, "User not authenticated", null));
+        }
     }
 
     @GetMapping("/feature-flags/check/{featureFlagName}/user/{accountId}")

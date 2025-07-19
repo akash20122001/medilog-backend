@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Slf4j
 public class AuthController {
 
@@ -26,6 +25,12 @@ public class AuthController {
 
         AuthResponse response = authService.signup(request);
         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully", response));
+    }
+
+    @GetMapping("/hello")
+    public ResponseEntity<ApiResponse> hello() {
+        log.info("Hello endpoint called");
+        return ResponseEntity.ok(new ApiResponse(true, "Hello World", "Hello World"));
     }
 
     @PostMapping("/login")

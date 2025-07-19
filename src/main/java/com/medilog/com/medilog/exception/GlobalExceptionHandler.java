@@ -66,10 +66,31 @@ public class GlobalExceptionHandler {
             .body(new ApiResponse(false, "Validation failed", errors));
     }
     
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiResponse> handleIllegalStateException(IllegalStateException ex) {
+        log.error("Illegal state error: {}", ex.getMessage());
+        
+        // Check if it's an authentication-related IllegalStateException
+        if (ex.getMessage() != null && ex.getMessage().contains("not authenticated")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResponse(false, "Authentication required"));
+        }
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new ApiResponse(false, "Invalid request state: " + ex.getMessage()));
+    }
+    
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGenericException(Exception ex) {
         log.error("Unexpected error: ", ex);
+        
+        // Provide more specific error information in development/debug mode
+        String errorMessage = "An unexpected error occurred";
+        if (log.isDebugEnabled()) {
+            errorMessage += ": " + ex.getMessage();
+        }
+        
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new ApiResponse(false, "An unexpected error occurred"));
+            .body(new ApiResponse(false, errorMessage));
     }
 }

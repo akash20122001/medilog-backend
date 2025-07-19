@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/superadmin")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Slf4j
 public class SuperAdminController {
 

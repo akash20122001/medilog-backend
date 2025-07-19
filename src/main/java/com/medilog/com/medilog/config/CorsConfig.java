@@ -20,7 +20,8 @@ public class CorsConfig implements WebMvcConfigurer {
                     "http://localhost:3000",
                     "http://localhost:5173",
                     "http://localhost:8080",
-                    "https://your-frontend-domain.com"
+                    "https://medilog-dev.onrender.com/",
+                    "https://medilog-prod.onrender.com/"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
@@ -36,7 +37,8 @@ public class CorsConfig implements WebMvcConfigurer {
             "http://localhost:3000",
             "http://localhost:5173", 
             "http://localhost:8080",
-            "https://your-frontend-domain.com"
+            "https://medilog-dev.onrender.com/",
+            "https://medilog-prod.onrender.com/"
         ));
         
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));

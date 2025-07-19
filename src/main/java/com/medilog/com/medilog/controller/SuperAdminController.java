@@ -3,6 +3,7 @@ package com.medilog.com.medilog.controller;
 import com.medilog.com.medilog.dto.ApiResponse;
 import com.medilog.com.medilog.dto.FeatureFlagRequest;
 import com.medilog.com.medilog.dto.FeatureFlagResponse;
+import com.medilog.com.medilog.dto.SimpleFeatureFlagResponse;
 import com.medilog.com.medilog.exception.FeatureFlagException;
 import com.medilog.com.medilog.service.FeatureFlagService;
 import jakarta.validation.Valid;
@@ -94,7 +95,7 @@ public class SuperAdminController {
     public ResponseEntity<ApiResponse> getFeatureFlagsForUser(@PathVariable Long accountId) {
         log.info("Get feature flags for user request received for account ID: {}", accountId);
 
-        List<FeatureFlagResponse> featureFlags = featureFlagService.getFeatureFlagsForUser(accountId);
+        List<SimpleFeatureFlagResponse> featureFlags = featureFlagService.getSimpleFeatureFlagsForUser(accountId);
         return ResponseEntity.ok(new ApiResponse(true, "User feature flags retrieved successfully", featureFlags));
     }
 

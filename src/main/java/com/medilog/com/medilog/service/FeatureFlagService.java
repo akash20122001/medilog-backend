@@ -2,6 +2,7 @@ package com.medilog.com.medilog.service;
 
 import com.medilog.com.medilog.dto.FeatureFlagRequest;
 import com.medilog.com.medilog.dto.FeatureFlagResponse;
+import com.medilog.com.medilog.dto.SimpleFeatureFlagResponse;
 import com.medilog.com.medilog.entity.FeatureFlag;
 import com.medilog.com.medilog.exception.FeatureFlagException;
 import com.medilog.com.medilog.repository.FeatureFlagRepository;
@@ -89,6 +90,15 @@ public class FeatureFlagService {
         List<FeatureFlag> featureFlags = featureFlagRepository.findByEnabledAccountId(accountId);
         return featureFlags.stream()
                 .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+    
+    public List<SimpleFeatureFlagResponse> getSimpleFeatureFlagsForUser(Long accountId) {
+        log.info("Fetching simple feature flags for account ID: {}", accountId);
+        
+        List<FeatureFlag> featureFlags = featureFlagRepository.findByEnabledAccountId(accountId);
+        return featureFlags.stream()
+                .map(ff -> new SimpleFeatureFlagResponse(ff.getId(), ff.getFeatureFlagName()))
                 .collect(Collectors.toList());
     }
     

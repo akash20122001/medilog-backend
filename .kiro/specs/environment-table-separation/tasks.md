@@ -28,17 +28,7 @@
   - Add `application-test.properties` for testing environment
   - _Requirements: 1.1, 1.2, 5.1, 5.2_
 
-
 - [ ] 5. Implement environment validation and startup checks
-
-
-
-
-
-
-
-
-
 
   - Create startup component to validate environment configuration
   - Add logging for active environment and table prefix information

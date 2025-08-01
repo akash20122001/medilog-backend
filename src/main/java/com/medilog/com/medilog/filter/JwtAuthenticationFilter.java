@@ -21,6 +21,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, 
                                   FilterChain filterChain) throws ServletException, IOException {
         
+        // Add CORS headers
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Allow-Credentials", "false");
+        
+        // Handle preflight requests
+        if ("OPTIONS".equals(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
+        
         String authHeader = request.getHeader("Authorization");
         
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -42,6 +54,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.startsWith("/api/auth/");
+        return path.startsWith("/api/auth/") || 
+               path.equals("/") || 
+               path.startsWith("/static/") ||
+               path.startsWith("/css/") ||
+               path.startsWith("/js/") ||
+               path.startsWith("/images/") ||
+               path.equals("/favicon.ico") ||
+               path.equals("/health");
     }
 }
